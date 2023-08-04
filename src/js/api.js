@@ -22,13 +22,17 @@ const {
   loadMore,
 } = refs;
 
+let myPage = 1:
 
 form.addEventListener('submit', onSubmit);
 loadMore.addEventListener('click', onLoadBtnClick);
 
 
 
-const lightbox = new SimpleLightbox('.gallery a', { captionDelay: 250 });
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
 async function onSubmit(event) {
 	event.preventDefault();
@@ -74,7 +78,18 @@ async function fetchThen(value) {
 }
 
 
-function onLoadBtnClick(evt) {
-  
+async function onLoadBtnClick() {
+  const value = myInput.value;
+  let limitAdd = 40;
+  myPage += 1;
+  try {
+    const resp = await fetchImage(value, myPage, limitAdd);
+    createMarkup(resp.data.hits, wraperGalery);
+    lightbox.refresh();
+
+  } catch (error) {
+    console.log(error);
+  }
+
 }
 
