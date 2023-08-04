@@ -1,7 +1,7 @@
 import '../index.css';
 import Notiflix from 'notiflix';
 
-import { fetchImage } from './form';
+import { fetchImage } from './pixabay';
 import { createMarkup } from './markup';
 
 import SimpleLightbox from 'simplelightbox';
@@ -80,12 +80,16 @@ async function fetchThen(value) {
 
 async function onLoadBtnClick() {
   const value = myInput.value;
-  let limitAdd = 40;
+  let limitAdd;
   myPage += 1;
   try {
     const resp = await fetchImage(value, myPage, limitAdd);
     createMarkup(resp.data.hits, wraperGalery);
     lightbox.refresh();
+
+    if (resp.data.hits.length < limitAdd) {
+      loadMore.hidden = true;
+    }
 
   } catch (error) {
     console.log(error);
