@@ -22,10 +22,10 @@ const {
   loadMore,
 } = refs;
 
-let myPage = 1;
-
 
 form.addEventListener('submit', onSubmit);
+loadMore.addEventListener('click', onLoadBtnClick);
+
 
 
 const lightbox = new SimpleLightbox('.gallery a', { captionDelay: 250 });
@@ -40,14 +40,12 @@ async function onSubmit(event) {
 
 	if (!myValue) {
 		loadMore.hidden = true
-		return
+		return Notiflix.Notify.info('Sorry, there are no images matching your search query. Please try again.')
 	}
 
  return await fetchThen(myValue);
 }
 
-
-loadMore.hidden = true 
 
 
 async function fetchThen(value) {
@@ -60,8 +58,6 @@ async function fetchThen(value) {
       Notiflix.Notify.info(
         'Sorry, there are no images matching your search query. Please try again.'
       ) 
-	  loadMore.hidden = true // -
-      return;
 	}
 	
     if (myNumber > 0) {
@@ -70,15 +66,15 @@ async function fetchThen(value) {
 	
     createMarkup(myArr, wraperGalery);
     lightbox.refresh();
-	loadMore.hidden = false 
 	
-	if (myArr.length < 40) {
-   loadMore.hidden = true // -
-   }
-
+	
   } catch (error) {
     console.log(error);
   }
 }
 
+
+function onLoadBtnClick(evt) {
+  
+}
 
