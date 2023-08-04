@@ -1,5 +1,5 @@
 export function createMarkup(arr, wrapper) {
-  const markap = arr
+  const markup = arr
     .map(
       ({
         webformatURL,
@@ -29,5 +29,5 @@ export function createMarkup(arr, wrapper) {
     )
     .join('');
  
-  wrapper.insertAdjacentHTML('beforeend', markap);
+  wrapper.insertAdjacentHTML('beforeend', markup);
 }
