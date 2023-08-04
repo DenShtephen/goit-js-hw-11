@@ -9,22 +9,22 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 
 
 const refs = {
-  form: document.querySelector('.search-form'),
+  formEl: document.querySelector('.search-form'),
   myInput: document.querySelector('.search-input'),
   wraperGalery: document.querySelector('.gallery'),
   loadMore: document.querySelector('.loadMore'),
 };
 
 const {
-  form,
+  formEl,
   myInput,
   wraperGalery,
   loadMore,
 } = refs;
 
-let myPage = 1:
+let myPage = 1;
 
-form.addEventListener('submit', onSubmit);
+formEl.addEventListener('submit', onSubmit);
 loadMore.addEventListener('click', onLoadBtnClick);
 
 
@@ -47,7 +47,7 @@ async function onSubmit(event) {
 		return Notiflix.Notify.info('Sorry, there are no images matching your search query. Please try again.')
 	}
 
- return await fetchThen(myValue);
+  fetchThen(myValue);
 }
 
 
@@ -66,11 +66,20 @@ async function fetchThen(value) {
 	
     if (myNumber > 0) {
 		Notiflix.Notify.info(`Hooray! We found ${myNumber} images.`);
-	}
+    }
+    
+        if (resp.data.totalHits <= 40) {
+      loadMore.hidden = true;
+        } else {
+          loadMore.hidden = false;
+    }
+
+  
 	
     createMarkup(myArr, wraperGalery);
     lightbox.refresh();
 	
+    
 	
   } catch (error) {
     console.log(error);
@@ -82,14 +91,24 @@ async function onLoadBtnClick() {
   const value = myInput.value;
   let limitAdd;
   myPage += 1;
+  
   try {
     const resp = await fetchImage(value, myPage, limitAdd);
+    const lastPage = Math.ceil(resp.data.totalHits / 40)
+    console.log(lastPage);
     createMarkup(resp.data.hits, wraperGalery);
     lightbox.refresh();
+
+    if (myPage === lastPage) {
+      Notiflix.Notify.info('Sorry, no more images, but we love you')
+      loadMore.hidden = true;
+}
+
 
     if (resp.data.hits.length < limitAdd) {
       loadMore.hidden = true;
     }
+
 
   } catch (error) {
     console.log(error);
